@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Baromètre Diverty</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #211f4e, #7b2cbf, #ff9f1c);
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 24px;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 560px;
+      background: rgba(255, 255, 255, 0.14);
+      backdrop-filter: blur(10px);
+      border-radius: 28px;
+      padding: 36px 28px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+    }
+
+    h1 {
+      font-size: 32px;
+      margin-bottom: 12px;
+    }
+
+    p {
+      font-size: 18px;
+      line-height: 1.4;
+    }
+
+    .score-display {
+      font-size: 64px;
+      font-weight: bold;
+      margin: 24px 0 8px;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      margin: 24px 0;
+    }
+
+    .labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 15px;
+      opacity: 0.9;
+    }
+
+    button {
+      margin-top: 28px;
+      border: none;
+      border-radius: 16px;
+      padding: 16px 28px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      background: white;
+      color: #31245c;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .code {
+      font-size: 42px;
+      font-weight: bold;
+      background: white;
+      color: #31245c;
+      padding: 18px 28px;
+      border-radius: 18px;
+      margin: 24px 0;
+      display: inline-block;
+      letter-spacing: 2px;
+    }
+
+    .small {
+      font-size: 14px;
+      opacity: 0.8;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="card" id="form-card">
+    <h1>🎯 Votre mission commence ici</h1>
+    <p>
+      Sur une échelle de 1 à 10, avez-vous envie de participer à une activité amusante et collaborative ?
+    </p>
+
+    <div class="score-display" id="scoreDisplay">5</div>
+
+    <input type="range" id="score" min="1" max="10" value="5" />
+
+    <div class="labels">
+      <span>😴 Pas du tout</span>
+      <span>🔥 À fond</span>
+    </div>
+
+    <button id="submitBtn" onclick="sendResponse()">Valider ma réponse</button>
+
+    <p class="small">Réponse anonyme.</p>
+  </div>
+
+  <div class="card hidden" id="result-card">
+    <h1>🧩 Votre indice mystère</h1>
+    <p>Gardez-le précieusement. Il pourrait vous donner un avantage pendant l’activité.</p>
+    <div class="code" id="codeDisplay"></div>
+    <p>Merci pour votre réponse 🎉</p>
+  </div>
+
+  <script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz2cjLHqnDIqzqM_zkjBRRsjcyU0naSM7WUgQR9oPCm5OFgdiCnZ4QaidJieQElbsw8/exec";
+
+    const ACTIVITE = "Activité test";
+
+    const codes = ["CADENAS", "CADEAU", "MASQUE"];
+
+    const scoreInput = document.getElementById("score");
+    const scoreDisplay = document.getElementById("scoreDisplay");
+
+    scoreInput.addEventListener("input", function () {
+      scoreDisplay.textContent = scoreInput.value;
+    });
+
+    function getRandomCode() {
+      return codes[Math.floor(Math.random() * codes.length)];
+    }
+
+    async function sendResponse() {
+      const submitBtn = document.getElementById("submitBtn");
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Envoi en cours...";
+
+      const code = getRandomCode();
+
+      const payload = {
+        activite: ACTIVITE,
+        score: scoreInput.value,
+        code: code,
+        userAgent: navigator.userAgent
+      };
+
+      try {
+        await fetch(SCRIPT_URL, {
+          method: "POST",
+          mode: "no-cors",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        });
+
+        document.getElementById("form-card").classList.add("hidden");
+        document.getElementById("result-card").classList.remove("hidden");
+        document.getElementById("codeDisplay").textContent = code;
+
+      } catch (error) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Réessayer";
+        alert("Erreur lors de l’envoi. Merci de réessayer.");
+      }
+    }
+  </script>
+</body>
+</html>
