@@ -417,64 +417,101 @@
 
     <!-- BOUTON -->
 
-    <button onclick="submitForm()">
-      Valider ma réponse →
-    </button>
-
+  <button
+  id="submitButton"
+  type="button"
+  onclick="submitForm()"
+>
+  Valider ma réponse →
+</button>
     <div class="privacy">
       Réponse anonyme et confidentielle
     </div>
 
   </main>
 
-  <script>
+<script>
+  /*
+    URL DU GOOGLE APPS SCRIPT
+    Remplace le texte ci-dessous par ton URL terminant par /exec
+  */
+  const SCRIPT_URL =
+    "https://script.google.com/macros/s/AKfycbybjy8WSfvT1bGDnrUmUls4hxWWXVfRNHD_NKe6iV78TIjiMwP1smMzFYrrGhwJTnXX/exec";
 
-    /* URL DE REDIRECTION */
+  /*
+    NOM DE L'ACTIVITÉ OU DU QUESTIONNAIRE
+    Tu peux changer cette valeur sur chaque page dupliquée.
+  */
+  const ACTIVITE =
+    "Burger Party - Avant évènement";
 
-    const REDIRECT_URL =
-      "https://experiencesdiverty.github.io/indice-mystere/index.html";
+  /*
+    URL DE REDIRECTION APRÈS L'ENREGISTREMENT
+  */
+  const REDIRECT_URL =
+    "https://experiencesdiverty.github.io/indice-mystere/index.html";
 
-    /* SLIDER */
+  const score =
+    document.getElementById("score");
 
-    const score =
-      document.getElementById("score");
+  const scoreValue =
+    document.getElementById("scoreValue");
 
-    const scoreValue =
-      document.getElementById("scoreValue");
+  const submitButton =
+    document.getElementById("submitButton");
 
-    score.addEventListener("input", () => {
+  score.addEventListener("input", () => {
+    scoreValue.textContent = score.value;
+  });
 
-      scoreValue.textContent =
-        score.value;
+  async function submitForm() {
+    const client =
+      document
+        .getElementById("company")
+        .value
+        .trim();
 
-    });
+    const note =
+      Number(score.value);
 
-    /* VALIDATION */
-
-    function submitForm() {
-
-      const company =
-        document
-          .getElementById("company")
-          .value
-          .trim();
-
-      if (!company) {
-
-        alert(
-          "Merci de renseigner le nom de votre entreprise."
-        );
-
-        return;
-
-      }
-
-      window.location.href =
-        REDIRECT_URL;
-
+    if (!client) {
+      alert("Merci de renseigner le nom de votre entreprise.");
+      return;
     }
 
-  </script>
+    submitButton.disabled = true;
+    submitButton.textContent = "Enregistrement...";
+
+    const payload = {
+      client: client,
+      activite: ACTIVITE,
+      note: note
+    };
+
+    try {
+      await fetch(SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: {
+          "Content-Type": "text/plain;charset=utf-8"
+        },
+        body: JSON.stringify(payload)
+      });
+
+      window.location.href = REDIRECT_URL;
+
+    } catch (error) {
+      console.error(error);
+
+      submitButton.disabled = false;
+      submitButton.textContent = "Valider ma réponse →";
+
+      alert(
+        "La réponse n'a pas pu être enregistrée. Merci de réessayer."
+      );
+    }
+  }
+</script>
 
 </body>
 </html>
