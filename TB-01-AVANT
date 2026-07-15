@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Baromètre Diverty</title>
+
+  <style>
+    :root {
+      --vert: #9bc55e;
+      --vert-fonce: #355952;
+      --jaune: #f8c47c;
+      --rose: #efafaa;
+      --bleu: #93d5e4;
+      --blanc: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Futura, "Trebuchet MS", Arial, sans-serif;
+      color: var(--blanc);
+
+      background:
+        linear-gradient(rgba(0,0,0,0.58), rgba(0,0,0,0.72)),
+        url("fond-diverty.png") center / cover no-repeat fixed;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 18px;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 760px;
+      padding: 46px 38px;
+      border-radius: 34px;
+
+      background: rgba(53, 89, 82, 0.82);
+
+      border: 2px solid var(--vert);
+
+      box-shadow: 0 24px 80px rgba(0,0,0,0.45);
+
+      backdrop-filter: blur(10px);
+
+      text-align: center;
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      margin-bottom: 26px;
+    }
+
+    .logo span {
+      color: var(--vert);
+    }
+
+    h1 {
+      font-size: clamp(34px, 6vw, 58px);
+      margin: 0;
+      line-height: 1.05;
+    }
+
+    .underline {
+      width: 110px;
+      height: 8px;
+      background: var(--jaune);
+      border-radius: 99px;
+      margin: 24px auto 30px;
+    }
+
+    .question {
+      font-size: clamp(20px, 3vw, 28px);
+      line-height: 1.45;
+      margin-bottom: 44px;
+    }
+
+    /* ENTREPRISE */
+
+    .company-field {
+      margin-bottom: 40px;
+      text-align: left;
+    }
+
+    .company-field label {
+      display: block;
+      margin-bottom: 12px;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--blanc);
+    }
+
+    .company-field input {
+      width: 100%;
+      padding: 18px 20px;
+      border-radius: 18px;
+      border: 2px solid rgba(255,255,255,0.18);
+
+      background: rgba(255,255,255,0.08);
+
+      color: white;
+
+      font-size: 18px;
+
+      font-family: inherit;
+
+      outline: none;
+
+      transition:
+        border 0.2s ease,
+        background 0.2s ease,
+        transform 0.2s ease;
+    }
+
+    .company-field input::placeholder {
+      color: rgba(255,255,255,0.5);
+    }
+
+    .company-field input:focus {
+      border-color: var(--vert);
+      background: rgba(255,255,255,0.12);
+      transform: translateY(-1px);
+    }
+
+    /* SLIDER */
+
+    .scale-numbers {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      margin-bottom: 14px;
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .slider-wrap {
+      position: relative;
+      padding: 0 8px;
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+
+      width: 100%;
+      height: 16px;
+
+      border-radius: 999px;
+
+      outline: none;
+
+      background: linear-gradient(
+        90deg,
+        var(--bleu) 0%,
+        var(--vert) 32%,
+        var(--jaune) 62%,
+        #ff8a4c 82%,
+        var(--rose) 100%
+      );
+
+      box-shadow:
+        inset 0 0 0 2px rgba(255,255,255,0.45),
+        0 6px 20px rgba(0,0,0,0.2);
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+
+      width: 54px;
+      height: 54px;
+
+      border-radius: 50%;
+
+      background: var(--vert);
+
+      border: 8px solid var(--blanc);
+
+      cursor: pointer;
+
+      box-shadow: 0 8px 24px rgba(0,0,0,0.45);
+
+      transition:
+        transform 0.15s ease,
+        box-shadow 0.15s ease;
+    }
+
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.05);
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      width: 54px;
+      height: 54px;
+
+      border-radius: 50%;
+
+      background: var(--vert);
+
+      border: 8px solid var(--blanc);
+
+      cursor: pointer;
+
+      box-shadow: 0 8px 24px rgba(0,0,0,0.45);
+    }
+
+    .value {
+      font-size: 56px;
+      color: var(--vert);
+      font-weight: 800;
+      margin: 28px 0 8px;
+    }
+
+    .labels {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 8px;
+
+      margin-top: 22px;
+
+      font-size: 16px;
+      line-height: 1.25;
+    }
+
+    /* MESSAGE */
+
+    .info {
+      margin: 48px auto 34px;
+
+      padding: 24px 28px;
+
+      border: 1.5px solid var(--vert);
+
+      border-radius: 22px;
+
+      max-width: 520px;
+
+      background: rgba(255,255,255,0.06);
+
+      font-size: 20px;
+      line-height: 1.4;
+    }
+
+    .info strong {
+      color: var(--vert);
+      font-size: 24px;
+    }
+
+    /* BOUTON */
+
+    button {
+      border: none;
+
+      border-radius: 999px;
+
+      padding: 20px 44px;
+
+      font-size: 24px;
+      font-weight: 800;
+
+      font-family: inherit;
+
+      cursor: pointer;
+
+      color: #213b36;
+
+      background: linear-gradient(
+        90deg,
+        var(--vert),
+        #c7ef7e
+      );
+
+      box-shadow: 0 14px 34px rgba(0,0,0,0.32);
+
+      transition:
+        transform 0.15s ease,
+        box-shadow 0.15s ease;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+
+      box-shadow:
+        0 18px 40px rgba(0,0,0,0.4);
+    }
+
+    .privacy {
+      margin-top: 26px;
+      font-size: 15px;
+      opacity: 0.9;
+    }
+
+    /* MOBILE */
+
+    @media (max-width: 600px) {
+
+      .card {
+        padding: 34px 22px;
+      }
+
+      .scale-numbers {
+        font-size: 18px;
+      }
+
+      .labels {
+        font-size: 12px;
+      }
+
+      button {
+        width: 100%;
+        font-size: 20px;
+      }
+
+      .company-field input {
+        font-size: 16px;
+      }
+
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="card">
+
+    <div class="logo">
+      DIVERTY <span>EVENTS</span>
+    </div>
+
+    <h1>Votre avis compte !</h1>
+
+    <div class="underline"></div>
+
+    <div class="question">
+      Sur une échelle de 0 à 10,
+      à quel point avez-vous envie
+      de participer à cette activité ?
+    </div>
+
+    <!-- ENTREPRISE -->
+
+    <div class="company-field">
+
+      <label for="company">
+        Nom de votre entreprise
+      </label>
+
+      <input
+        type="text"
+        id="company"
+        placeholder="Ex : Michelin"
+      />
+
+    </div>
+
+    <!-- SLIDER -->
+
+    <div class="scale-numbers">
+      <span>0</span>
+      <span>2</span>
+      <span>4</span>
+      <span>6</span>
+      <span>8</span>
+      <span>10</span>
+    </div>
+
+    <div class="slider-wrap">
+
+      <input
+        type="range"
+        id="score"
+        min="0"
+        max="10"
+        step="2"
+        value="6"
+      />
+
+    </div>
+
+    <div class="value" id="scoreValue">
+      6
+    </div>
+
+    <div class="labels">
+      <span>Froid</span>
+      <span>Pas vraiment motivé</span>
+      <span>Moyen</span>
+      <span>Motivé</span>
+      <span>Très motivé</span>
+      <span>À fond !</span>
+    </div>
+
+    <!-- MESSAGE -->
+
+    <div class="info">
+
+      <strong>
+        Chaque réponse nous aide
+      </strong>
+
+      <br />
+
+      à créer des expériences encore plus folles.
+
+      <br />
+
+      Merci !
+
+    </div>
+
+    <!-- BOUTON -->
+
+  <button
+  id="submitButton"
+  type="button"
+  onclick="submitForm()"
+>
+  Valider ma réponse →
+</button>
+    <div class="privacy">
+      Réponse anonyme et confidentielle
+    </div>
+
+  </main>
+
+<script>
+  /*
+    URL DU GOOGLE APPS SCRIPT
+    Remplace le texte ci-dessous par ton URL terminant par /exec
+  */
+  const SCRIPT_URL =
+    "https://script.google.com/macros/s/AKfycbybjy8WSfvT1bGDnrUmUls4hxWWXVfRNHD_NKe6iV78TIjiMwP1smMzFYrrGhwJTnXX/exec";
+
+  /*
+    NOM DE L'ACTIVITÉ OU DU QUESTIONNAIRE
+    Tu peux changer cette valeur sur chaque page dupliquée.
+  */
+  const ACTIVITE =
+    "Burger Party - Avant évènement";
+
+  /*
+    URL DE REDIRECTION APRÈS L'ENREGISTREMENT
+  */
+  const REDIRECT_URL =
+    "https://experiencesdiverty.github.io/indice-mystere/index.html";
+
+  const score =
+    document.getElementById("score");
+
+  const scoreValue =
+    document.getElementById("scoreValue");
+
+  const submitButton =
+    document.getElementById("submitButton");
+
+  score.addEventListener("input", () => {
+    scoreValue.textContent = score.value;
+  });
+
+  async function submitForm() {
+    const client =
+      document
+        .getElementById("company")
+        .value
+        .trim();
+
+    const note =
+      Number(score.value);
+
+    if (!client) {
+      alert("Merci de renseigner le nom de votre entreprise.");
+      return;
+    }
+
+    submitButton.disabled = true;
+    submitButton.textContent = "Enregistrement...";
+
+    const payload = {
+      client: client,
+      activite: ACTIVITE,
+      note: note
+    };
+
+    try {
+      await fetch(SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: {
+          "Content-Type": "text/plain;charset=utf-8"
+        },
+        body: JSON.stringify(payload)
+      });
+
+      window.location.href = REDIRECT_URL;
+
+    } catch (error) {
+      console.error(error);
+
+      submitButton.disabled = false;
+      submitButton.textContent = "Valider ma réponse →";
+
+      alert(
+        "La réponse n'a pas pu être enregistrée. Merci de réessayer."
+      );
+    }
+  }
+</script>
+
+</body>
+</html>
