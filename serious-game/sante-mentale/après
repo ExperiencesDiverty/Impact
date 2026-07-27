@@ -1,1 +1,103 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+  <title>Après l’activité — Santé mentale</title>
+
+  <link rel="stylesheet" href="../../styles/style.css" />
+</head>
+
+<body>
+  <main class="card">
+    <div class="logo">
+      DIVERTY <span>EVENTS</span>
+    </div>
+
+    <h1>Votre retour compte !</h1>
+
+    <div class="underline"></div>
+
+    <div class="question" id="questionText"></div>
+
+    <div class="scale-numbers">
+      <span>0</span>
+      <span>2</span>
+      <span>4</span>
+      <span>6</span>
+      <span>8</span>
+      <span>10</span>
+    </div>
+
+    <div class="slider-wrap">
+      <input
+        type="range"
+        id="score"
+        min="0"
+        max="10"
+        step="2"
+        value="6"
+      />
+    </div>
+
+    <div class="value" id="scoreValue">6</div>
+
+    <div class="labels">
+      <span id="label0"></span>
+      <span id="label2"></span>
+      <span id="label4"></span>
+      <span id="label6"></span>
+      <span id="label8"></span>
+      <span id="label10"></span>
+    </div>
+
+    <div class="info">
+      <strong>Votre photo vous attend.</strong>
+      <br />
+      Validez votre réponse pour accéder à la photo de l’événement.
+    </div>
+
+    <button
+      id="submitButton"
+      type="button"
+      onclick="submitForm()"
+    >
+      Valider ma réponse →
+    </button>
+
+    <div class="error-message" id="errorMessage"></div>
+
+    <div class="privacy">
+      Réponse anonyme et confidentielle
+    </div>
+  </main>
+
+  <script>
+    const CONFIG = {
+      activity: "Serious Game Santé mentale",
+
+      moment: "Après",
+
+      question:
+        "À quel point cette expérience vous a-t-elle donné envie d’approfondir les sujets liés à la santé mentale ?",
+
+      labels: {
+        0: "Pas du tout",
+        2: "Très peu",
+        4: "Un peu",
+        6: "Plutôt oui",
+        8: "Beaucoup",
+        10: "Tout à fait"
+      },
+
+      redirectPage: "photo.html",
+
+      scriptUrl:
+        "https://script.google.com/macros/s/AKfycbwvOaD7CaTIw763Fr-FqAxHytmID2fBGBx-mZBUOHrWX-6uUU8zPX9HoGNw_8gGPDRT/exec"
+    };
+  </script>
+
+  <script src="../../scripts/questionnaire.js"></script>
+</body>
+</html>
