@@ -1,1 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+  <title>Indice mystère</title>
+
+  <link rel="stylesheet" href="../../styles/style.css" />
+</head>
+
+<body>
+  <main class="card">
+    <div class="logo">
+      DIVERTY <span>EVENTS</span>
+    </div>
+
+    <h1>Indice mystère débloqué</h1>
+
+    <div class="underline"></div>
+
+    <div class="intro">
+      Voici l’indice attribué à votre mission :
+    </div>
+
+    <div class="code-box" id="codeBox"></div>
+
+    <div class="info">
+      <strong>Gardez-le précieusement.</strong>
+      <br />
+      D’autres participants ont peut-être reçu un indice différent.
+      Échangez entre vous pour découvrir le mot mystère.
+    </div>
+
+    <div class="small">
+      Merci pour votre participation.
+    </div>
+  </main>
+
+  <script>
+    const indices = [
+      "CADENAS",
+      "CADEAU",
+      "MASQUE"
+    ];
+
+    const randomIndex =
+      Math.floor(Math.random() * indices.length);
+
+    document.getElementById("codeBox").textContent =
+      indices[randomIndex];
+  </script>
+</body>
+</html>
