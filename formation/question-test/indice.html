@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title id="pageTitle">Décryptage de l’indice</title>
+
+  <link rel="stylesheet" href="../../styles/style.css" />
+
+  <style>
+    .decrypt-card {
+      overflow: hidden;
+    }
+
+    .decrypt-title {
+      min-height: 1.5em;
+      transition: opacity 0.25s ease;
+    }
+
+    .decrypt-zone {
+      max-width: 580px;
+      margin: 34px auto 26px;
+      padding: 28px 24px;
+
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 24px;
+
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .decrypt-code {
+      min-height: 1.3em;
+      margin-bottom: 28px;
+
+      color: var(--jaune);
+      font-family: Consolas, Monaco, monospace;
+      font-size: clamp(32px, 8vw, 62px);
+      font-weight: 900;
+      letter-spacing: 8px;
+      line-height: 1.2;
+      word-break: break-all;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 14px;
+
+      overflow: hidden;
+      border-radius: 999px;
+
+      background: rgba(255, 255, 255, 0.16);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+    }
+
+    .progress-bar {
+      width: 0%;
+      height: 100%;
+
+      border-radius: inherit;
+
+      background: linear-gradient(
+        90deg,
+        var(--bleu),
+        var(--vert),
+        var(--jaune)
+      );
+
+      transition: width 0.15s linear;
+    }
+
+    .progress-value {
+      margin-top: 12px;
+
+      font-size: 14px;
+      font-weight: 700;
+      opacity: 0.88;
+    }
+
+    .final-content {
+      display: none;
+      opacity: 0;
+      transform: translateY(16px);
+
+      transition:
+        opacity 0.55s ease,
+        transform 0.55s ease;
+    }
+
+    .final-content.visible {
+      display: block;
+    }
+
+    .final-content.revealed {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .success-line {
+      margin-bottom: 18px;
+
+      color: var(--vert);
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+    }
+
+    .revealed-label {
+      margin-bottom: 14px;
+
+      font-size: 19px;
+      opacity: 0.92;
+    }
+
+    .revealed-code {
+      display: inline-block;
+
+      margin: 8px auto 28px;
+      padding: 24px 34px;
+
+      border-radius: 24px;
+
+      color: var(--vert-fonce);
+      background: var(--blanc);
+
+      font-size: clamp(38px, 9vw, 72px);
+      font-weight: 900;
+      letter-spacing: 4px;
+
+      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.35);
+    }
+
+    .letter-pop {
+      display: inline-block;
+
+      opacity: 0;
+      transform: translateY(12px) scale(0.75);
+
+      animation: revealLetter 0.34s forwards;
+    }
+
+    @keyframes revealLetter {
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .decrypt-code {
+        letter-spacing: 4px;
+      }
+
+      .decrypt-zone {
+        padding: 24px 16px;
+      }
+
+      .revealed-code {
+        padding: 22px 18px;
+        letter-spacing: 2px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="card decrypt-card">
+    <div class="logo">
+      DIVERTY <span>EVENTS</span>
+    </div>
+
+    <h1 id="mainTitle"></h1>
+
+    <div class="underline"></div>
+
+    <div id="decryptSection">
+      <div class="intro" id="introText"></div>
+
+      <div class="intro decrypt-title" id="statusText"></div>
+
+      <div class="decrypt-zone">
+        <div class="decrypt-code" id="scrambledCode">
+          X7P4K9
+        </div>
+
+        <div class="progress-track">
+          <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <div class="progress-value" id="progressValue">
+          0 %
+        </div>
+      </div>
+    </div>
+
+    <div class="final-content" id="finalContent">
+      <div class="success-line" id="successText"></div>
+
+      <div class="revealed-label" id="resultLabel"></div>
+
+      <div class="revealed-code" id="revealedCode"></div>
+
+      <div class="info">
+        <strong id="finalTitle"></strong>
+        <br />
+        <span id="finalText"></span>
+      </div>
+
+      <div class="small" id="footerText"></div>
+    </div>
+  </main>
+
+  <script>
+    /* =====================================================
+       CONFIGURATION À MODIFIER
+       Modifie uniquement cette partie pour une autre activité
+       ===================================================== */
+
+    const CONFIG = {
+      pageTitle:
+        "Décryptage de l’indice",
+
+      mainTitle:
+        "Décryptage de l’indice",
+
+      introText:
+        "Patientez quelques secondes pendant que votre indice est identifié.",
+
+      indices: [
+        "EMOTIONS",
+        "FILM",
+        "RILEY"
+      ],
+
+      messages: [
+        "Connexion au serveur DIVERTY...",
+        "Analyse des réponses...",
+        "Recherche d’un indice...",
+        "Décryptage en cours..."
+      ],
+
+      identifiedMessage:
+        "Indice identifié...",
+
+      successText:
+        "✓ Décryptage terminé",
+
+      resultLabel:
+        "Votre indice personnel est :",
+
+      finalTitle:
+        "Gardez-le précieusement.",
+
+      finalText:
+        "D’autres participants ont peut-être reçu un indice différent. Échangez entre vous pour découvrir le mot mystère.",
+
+      footerText:
+        "Merci pour votre participation.",
+
+      totalDuration:
+        4200,
+
+      finalPause:
+        450,
+
+      letterRevealDelay:
+        120,
+
+      scrambleSpeed:
+        85,
+
+      scrambleCharacters:
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#@%&"
+    };
+
+    /* =====================================================
+       FIN DE LA CONFIGURATION
+       Ne pas modifier la partie ci-dessous
+       ===================================================== */
+
+    const pageTitle =
+      document.getElementById("pageTitle");
+
+    const mainTitle =
+      document.getElementById("mainTitle");
+
+    const introText =
+      document.getElementById("introText");
+
+    const statusText =
+      document.getElementById("statusText");
+
+    const scrambledCode =
+      document.getElementById("scrambledCode");
+
+    const progressBar =
+      document.getElementById("progressBar");
+
+    const progressValue =
+      document.getElementById("progressValue");
+
+    const decryptSection =
+      document.getElementById("decryptSection");
+
+    const finalContent =
+      document.getElementById("finalContent");
+
+    const successText =
+      document.getElementById("successText");
+
+    const resultLabel =
+      document.getElementById("resultLabel");
+
+    const revealedCode =
+      document.getElementById("revealedCode");
+
+    const finalTitle =
+      document.getElementById("finalTitle");
+
+    const finalText =
+      document.getElementById("finalText");
+
+    const footerText =
+      document.getElementById("footerText");
+
+    function validateConfig() {
+      if (
+        !Array.isArray(CONFIG.indices) ||
+        CONFIG.indices.length === 0
+      ) {
+        throw new Error(
+          "La liste CONFIG.indices doit contenir au moins un indice."
+        );
+      }
+
+      if (
+        !Array.isArray(CONFIG.messages) ||
+        CONFIG.messages.length === 0
+      ) {
+        throw new Error(
+          "La liste CONFIG.messages doit contenir au moins un message."
+        );
+      }
+
+      if (
+        !Number.isFinite(CONFIG.totalDuration) ||
+        CONFIG.totalDuration < 500
+      ) {
+        throw new Error(
+          "CONFIG.totalDuration doit être supérieur ou égal à 500 millisecondes."
+        );
+      }
+    }
+
+    function applyConfigTexts() {
+      document.title = CONFIG.pageTitle;
+
+      pageTitle.textContent =
+        CONFIG.pageTitle;
+
+      mainTitle.textContent =
+        CONFIG.mainTitle;
+
+      introText.textContent =
+        CONFIG.introText;
+
+      statusText.textContent =
+        CONFIG.messages[0];
+
+      successText.textContent =
+        CONFIG.successText;
+
+      resultLabel.textContent =
+        CONFIG.resultLabel;
+
+      finalTitle.textContent =
+        CONFIG.finalTitle;
+
+      finalText.textContent =
+        CONFIG.finalText;
+
+      footerText.textContent =
+        CONFIG.footerText;
+    }
+
+    const selectedIndex =
+      CONFIG.indices[
+        Math.floor(Math.random() * CONFIG.indices.length)
+      ];
+
+    function createRandomCode(length) {
+      let result = "";
+
+      for (let i = 0; i < length; i += 1) {
+        const randomPosition =
+          Math.floor(
+            Math.random() *
+            CONFIG.scrambleCharacters.length
+          );
+
+        result +=
+          CONFIG.scrambleCharacters[randomPosition];
+      }
+
+      return result;
+    }
+
+    function updateMessage(progress) {
+      const messageCount =
+        CONFIG.messages.length;
+
+      const messageIndex =
+        Math.min(
+          Math.floor(progress * messageCount),
+          messageCount - 1
+        );
+
+      const nextMessage =
+        CONFIG.messages[messageIndex];
+
+      if (statusText.textContent === nextMessage) {
+        return;
+      }
+
+      statusText.style.opacity = "0";
+
+      window.setTimeout(() => {
+        statusText.textContent =
+          nextMessage;
+
+        statusText.style.opacity =
+          "1";
+      }, 160);
+    }
+
+    function revealFinalCode() {
+      decryptSection.style.display =
+        "none";
+
+      revealedCode.innerHTML =
+        "";
+
+      selectedIndex
+        .split("")
+        .forEach((letter, index) => {
+          const span =
+            document.createElement("span");
+
+          span.className =
+            "letter-pop";
+
+          span.textContent =
+            letter;
+
+          span.style.animationDelay =
+            `${index * CONFIG.letterRevealDelay}ms`;
+
+          revealedCode.appendChild(span);
+        });
+
+      finalContent.classList.add(
+        "visible"
+      );
+
+      window.requestAnimationFrame(() => {
+        finalContent.classList.add(
+          "revealed"
+        );
+      });
+    }
+
+    function startDecryptAnimation() {
+      const startTime =
+        performance.now();
+
+      const scrambleInterval =
+        window.setInterval(() => {
+          scrambledCode.textContent =
+            createRandomCode(
+              selectedIndex.length
+            );
+        }, CONFIG.scrambleSpeed);
+
+      function animate(currentTime) {
+        const elapsed =
+          currentTime - startTime;
+
+        const progress =
+          Math.min(
+            elapsed / CONFIG.totalDuration,
+            1
+          );
+
+        const percentage =
+          Math.round(progress * 100);
+
+        progressBar.style.width =
+          `${percentage}%`;
+
+        progressValue.textContent =
+          `${percentage} %`;
+
+        updateMessage(progress);
+
+        if (progress < 1) {
+          window.requestAnimationFrame(
+            animate
+          );
+
+          return;
+        }
+
+        window.clearInterval(
+          scrambleInterval
+        );
+
+        scrambledCode.textContent =
+          selectedIndex;
+
+        statusText.textContent =
+          CONFIG.identifiedMessage;
+
+        window.setTimeout(
+          revealFinalCode,
+          CONFIG.finalPause
+        );
+      }
+
+      window.requestAnimationFrame(
+        animate
+      );
+    }
+
+    try {
+      validateConfig();
+      applyConfigTexts();
+      startDecryptAnimation();
+    } catch (error) {
+      console.error(error);
+
+      mainTitle.textContent =
+        "Une erreur est survenue";
+
+      introText.textContent =
+        "La configuration de cette page est incomplète.";
+
+      statusText.textContent =
+        error.message;
+
+      progressValue.textContent =
+        "";
+    }
+  </script>
+</body>
+</html>
